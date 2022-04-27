@@ -1,0 +1,4 @@
+Bundle-Name: container-order-rule
+Bundle-SymbolicName: com.liferay.commerce.demo.order.rule.container
+Bundle-Version: 1.0.0
+Web-ContextPath: /container-order-rule
