@@ -56,6 +56,7 @@ public class ContainerCOREntryType implements COREntryType {
         double packingEfficiencyModifier = containerCOREntryDisplayContext.getPackingEfficiencyModifierAmount();
         double orderVolume = 0.0;
         double orderWeight = 0.0;
+        String errorMessage = "";
         for (CommerceOrderItem commerceOrderItem: commerceOrderItems){
 
             double depth = commerceOrderItem.getDepth()/12;
@@ -68,10 +69,12 @@ public class ContainerCOREntryType implements COREntryType {
         }
 
         if (orderVolume > containerMaxVolume){
-            _log.debug("Order volume: " + orderVolume + " is greater than container maximum volume " + containerMaxVolume);
+            errorMessage = "Order volume: " + orderVolume + " is greater than container maximum volume " + containerMaxVolume;
+            _log.debug(errorMessage);
             return false;
         }else if(orderWeight > containerMaxWeight) {
-            _log.debug("Order Weight: " + orderWeight + " is greater than container maximum weight " + containerMaxWeight);
+            errorMessage = "Order Weight: " + orderWeight + " is greater than container maximum weight " + containerMaxWeight;
+            _log.debug(errorMessage);
             return false;
         }else{
             _log.debug("Order volume: " + orderVolume + " is less than container maximum volume " + containerMaxVolume);
@@ -82,11 +85,13 @@ public class ContainerCOREntryType implements COREntryType {
 
     @Override
     public String getErrorMessage(COREntry corEntry, CommerceOrder commerceOrder, Locale locale) throws PortalException {
-        return "Total order volume must be less than xxxx";
+        ContainerCOREntryDisplayContext containerCOREntryDisplayContext = new ContainerCOREntryDisplayContext(corEntry);
+        double containerMaxVolume = containerCOREntryDisplayContext.getMaximumVolumeAmount();
+        double containerMaxWeight = containerCOREntryDisplayContext.getMaximumWeightAmount();
+        return "Total order volume must be less than " + containerMaxVolume + " " +
+                "and total order weight must be less than " + containerMaxWeight + ".";
     }
 
     private static final Log _log = LogFactoryUtil.getLog(
             ContainerCOREntryType.class);
-
-
 }
